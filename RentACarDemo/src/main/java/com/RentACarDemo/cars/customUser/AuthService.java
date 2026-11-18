@@ -38,6 +38,7 @@ public class AuthService {
 
         String encodedPassword = passwordEncoder.encode(userReq.getPassword());
         user.setPassword(encodedPassword);
+
         user.setRole(Role.CUSTOMER);
         user.setDeleted(false);
 

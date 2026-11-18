@@ -37,20 +37,20 @@ public class UserController {
                 .body(userResp);
     }
 
-        @PostMapping("/book/{cid}")
-        public ResponseEntity<String> createBooking(@PathVariable Long cid, Authentication authentication){
+    @PostMapping("/book/{cid}")
+    public ResponseEntity<String> createBooking(@PathVariable Long cid, Authentication authentication){
 
-            String email = authentication.getName();
+        String email = authentication.getName();
 
-            User user = userRepository.findByEmail(email)
-                    .orElseThrow(() -> new RuntimeException("User not found"));
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
-            Long uid = user.getId();
+        Long uid = user.getId();
 
-            userService.createBooking(uid, cid);
+        userService.createBooking(uid, cid);
 
-            return ResponseEntity.ok("Done");
-        }
+        return ResponseEntity.ok("Done");
+    }
 
     @PostMapping("/cancel")
     public ResponseEntity<String> cancelBooking(Authentication authentication){
