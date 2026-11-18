@@ -20,15 +20,6 @@ public class CarController {
         this.carService=carService;
     }
 
-    @PostMapping
-    public ResponseEntity<CarRespondDto> createCar(@Valid @RequestBody CarRequestDto carRequestDto){
-        CarRespondDto carResp = carService.createCar(carRequestDto);
-
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(carResp);
-    }
-
     @GetMapping("/{id}")
     public ResponseEntity<CarRespondDto> getCar(@PathVariable Long id){
         CarRespondDto carResp = carService.getCar(id);
@@ -50,20 +41,5 @@ public class CarController {
         return ResponseEntity.ok(carList);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<CarRespondDto> updateCar(@Valid @RequestBody CarRequestDto carRequestDto, @PathVariable Long id){
-        CarRespondDto carResp = carService.updateCar(carRequestDto, id);
-
-        return ResponseEntity.ok(carResp);
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteCar(@PathVariable Long id){
-        carService.deleteCar(id);
-
-        return ResponseEntity
-                .status(HttpStatus.NO_CONTENT)
-                .build();
-    }
 
 }

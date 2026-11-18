@@ -41,13 +41,11 @@ public class UserController {
     public ResponseEntity<String> createBooking(@PathVariable Long cid, Authentication authentication){
 
         String email = authentication.getName();
-
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
+        Long id = user.getId();
 
-        Long uid = user.getId();
-
-        userService.createBooking(uid, cid);
+        userService.createBooking(id, cid);
 
         return ResponseEntity.ok("Done");
     }
@@ -66,43 +64,46 @@ public class UserController {
         return ResponseEntity.ok("Booking Canceled");
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<UserResponseDto> getUser(@PathVariable Long id){
-        UserResponseDto userResp = userService.getUser(id);
+    @GetMapping("/me")
+    public ResponseEntity<UserResponseDto> getUser(Authentication authentication){
+        String email = authentication.getName();
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        Long uid = user.getId();
+
+        UserResponseDto userResp = userService.getUser(uid);
 
         return ResponseEntity.ok(userResp);
     }
 
-    @GetMapping
-    public ResponseEntity<List<UserResponseDto>> getAllUser(){
-        List<UserResponseDto> userList = userService.getAllUser();
+    @PutMapping("/me")
+    public ResponseEntity<UserResponseDto> updateUser(@Valid @RequestBody UserRequestDto userRequestDto, Authentication authentication){
+        String email = authentication.getName();
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        Long uid = user.getId();
 
-        return ResponseEntity.ok(userList);
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<UserResponseDto> updateUser(@Valid @RequestBody UserRequestDto userRequestDto, @PathVariable Long id){
-        UserResponseDto carResp = userService.updateCar(userRequestDto, id);
-
+        UserResponseDto carResp = userService.updateCar(userRequestDto, uid);
         return ResponseEntity.ok(carResp);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteUser(@PathVariable Long id){
-        userService.deleteUser(id);
 
+    @PatchMapping("/me")
+    public ResponseEntity<String> softDelete(Authentication authentication){
+        String email = authentication.getName();
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        Long uid = user.getId();
+
+        userService.softDelete(uid);
         return ResponseEntity
                 .status(HttpStatus.NO_CONTENT)
                 .build();
     }
 
-    @PatchMapping("/{id}")
-    public ResponseEntity<String> softDelete(@PathVariable Long id){
-        userService.softDelete(id);
-
-        return ResponseEntity
-                .status(HttpStatus.NO_CONTENT)
-                .build();
+        @GetMapping("/debug")
+    public Object debug(Authentication auth) {
+        return auth.getAuthorities();
     }
 
 }
